@@ -5,12 +5,23 @@ from django.core import serializers
 from django.db.models.query_utils import Q
 
 import operator
+from radiothon.views import create_premium_formsets
 
 def ajax_get_premiums_at_amount(request, amount):
     premiums = Premium.objects.filter(donation__lte = amount)
     json = serializers.serialize(
              'json', premiums
              )
+    return HttpResponse(json, content_type="application/json")
+
+def ajax_get_premium_forms_at_amount(request, amount):
+    premiums = Premium.objects.filter(donation__lte = amount)
+    
+    # This rides on a pretty flimsy assumption that create_premium_formsets
+    # returns the formsets in the same order as the premiums were sent
+    premium_formsets = dict(zip(premiums, create_premium_formsets(None, premiums)))
+    json_list = [ {'name': premium.name, 'management_form': formset.management_form.as_p(), 'formset': formset.as_p()} for (premium, formset) in premium_formsets.iteritems() ]
+    json = simplejson.dumps(json_list)
     return HttpResponse(json, content_type="application/json")
 
 def ajax_get_premium_availability(request, premium, options):

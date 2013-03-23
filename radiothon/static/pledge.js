@@ -32,65 +32,7 @@ $.fn.showOption = function() {
 	}
 }
 
-$(document).ready(function(){
-	/* Adds the event handler for changes in the payment method dropdown */
-	$('#id_pledge_form-payment').change(function(){
-		/* Handle what happens when changing the payment method 
-		 * If Credit: Show the Credit and Address forms
-		 * If HokiePassport: Show the Hokiepassport forms */
-		$('option:selected', this).each(function () {
-			if($(this).text() == 'Credit'){
-				$('#address_subform').show('slow');
-				
-				$('#credit_subform').show('slow');
-				$('#hokiepassport_subform').hide('slow');
-			}else if($(this).text() == 'Hokie Passport'){
-				$('#credit_subform').hide('slow');
-				$('#hokiepassport_subform').show('slow');
-			}else{
-				$('#credit_subform').hide('slow');
-				$('#hokiepassport_subform').hide('slow');
-			}
-			
-			/* If it's not credit, and the Delivery 
-			 * isn't Mail, hide the Address */
-			if($(this).text() != 'Credit'){
-				$('#id_pledge_form-premium_delivery option:selected').each(function(){
-					if($(this).text() != 'Mail'){
-						$('#address_subform').hide('slow');
-					}
-				});
-			}
-		});
-	})
-  
-	/* Add the event handler for changes in the Premium Delivery dropdown */
-	$('#id_pledge_form-premium_delivery').change(function(){
-		$('option:selected', this).each(function(){
-			if($(this).text() == 'Mail'){
-				$('#address_subform').show('slow');
-			}else{
-				$('#id_pledge_form-payment option:selected').each(function(){
-					if($(this).text() == 'Credit'){
-						$('#address_subform').show('slow');
-					}else{
-						$('#address_subform').hide('slow');
-					}
-				});
-			}
-		});
-	})
-	
-	/* Add the event handler for changes in the premium forms */
-	/* Unhide/Create premium forms */
-	$('#id_pledge_form-amount').change(function(){
-		var donation = $('#id_pledge_form-amount').val()
-		var args = {url:'/radiothon/premium/' + donation + '/'};
-		$.getJSON(args, function(data){
-			/* Create/Unhide the premium forms */
-		});
-	});
-	
+var add_premium_eventhandlers = function(){
 	/* Hide unavailable options based on attribute choices */
 	var avail_url = '/radiothon/premium/availability/{0}/'
 	
@@ -164,6 +106,101 @@ $(document).ready(function(){
 					});
 				}
 			});
+		}
+	});
+}
+
+var donation_update = function(){
+	var donation = $('#id_pledge_form-amount').val();
+	var formarea = $('#premiums_subform_formarea');
+	formarea.hide('fast');
+	formarea.html('');
+	if (donation != ''){
+		$('#premiums_subform').show('slow');
+		var url = '/radiothon/premium/{0}/'.format(donation);
+		$.getJSON(url, function(data){
+			var formhtml = '';
+			for(var i = 0; i < data.length; i++){
+				formhtml += '<h4 class="subform_title">{0}</h2>'.format(data[i].name);
+				formhtml += data[i].formset;
+				/* Create/Unhide the premium forms */
+			}
+			formarea.html(formhtml);
+			add_premium_eventhandlers();
+			
+			var delivery = $('#id_pledge_form-premium_delivery').val();
+			if (delivery != 'N' && delivery != ''){
+				formarea.show('slow');
+			}
+		});
+	}else{
+		$('#premiums_subform').hide('fast');
+	}
+}
+
+var payment_update = function(){
+	/* Handle what happens when changing the payment method 
+	 * If Credit: Show the Credit and Address forms
+	 * If HokiePassport: Show the Hokiepassport forms */
+	var payment_method = $('#id_pledge_form-payment').val();
+	if(payment_method == 'R'){
+		$('#address_subform').show('slow');
+		
+		$('#credit_subform').show('slow');
+		$('#hokiepassport_subform').hide('slow');
+	}else if(payment_method == 'P'){
+		$('#credit_subform').hide('slow');
+		$('#hokiepassport_subform').show('slow');
+	}else{
+		$('#credit_subform').hide('slow');
+		$('#hokiepassport_subform').hide('slow');
+	}
+	
+	/* If it's not credit, and the Delivery 
+	 * isn't Mail, hide the Address */
+	if(payment_method != 'R'){
+		var delivery = $('#id_pledge_form-premium_delivery').val();
+		if(delivery != 'M'){
+			$('#address_subform').hide('slow');
+		}
+	}
+}
+
+$(document).ready(function(){
+	
+	donation_update();
+	payment_update();
+	/* Add the event handler for changes in the premium forms */
+	/* Unhide/Create premium forms */
+	$('#id_pledge_form-amount').change(function(){
+		donation_update();
+	});
+	
+	/* Adds the event handler for changes in the payment method dropdown */
+	$('#id_pledge_form-payment').change(function(){
+		payment_update();
+	});
+  
+	/* Add the event handler for changes in the Premium Delivery dropdown */
+	$('#id_pledge_form-premium_delivery').change(function(){
+		var delivery = $(this).val();
+		var address_subform = $('#address_subform')
+		var premium_formarea = $('#premiums_subform_formarea');
+		if (delivery != 'N' && delivery != ''){
+			premium_formarea.show('slow');
+		}else{
+			premium_formarea.hide('slow');
+		}
+		
+		if (delivery == 'M'){
+			address_subform.show('slow');
+		}else{
+			var payment = $('#id_pledge_form-payment').val();
+			if(payment == 'R'){ // Credit
+				address_subform.show('slow');
+			}else{
+				address_subform.hide('slow');
+			}
 		}
 	});
 });

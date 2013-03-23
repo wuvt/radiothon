@@ -40,7 +40,9 @@ def premium_choice_form_factory(premium, form = forms.Form):
             if (empty_rels.count() == rels.count()):
                 attr_opts = attr_opts.exclude(pk = option.pk)
         
+        valid = validators.RegexValidator('.+')
+        
         # Add the filtered list to the model choice field        
-        attrs['%s' % attribute.name] = forms.ModelChoiceField(attr_opts)
+        attrs['%s' % attribute.name] = forms.ModelChoiceField(attr_opts, validators = [valid,])
         
     return type(premium.simple_name + 'OptionChoiceForm', (forms.Form,), attrs)

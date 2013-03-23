@@ -115,10 +115,17 @@ a:link, a:visited, a:hover, a:active
 	background-color: lightblue;
 }
 
-.instruction
+.mc_script
 {
     margin: 5px;
     color: darkred;
+    display: block;
+}
+
+.mc_note
+{
+    margin: 5px;
+    color: darkblue;
     display: block;
 }
 

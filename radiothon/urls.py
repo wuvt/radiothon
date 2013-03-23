@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     
     url(r'^radiothon/pledge/$', views.rthon_pledge),
     url(r'^radiothon/pledge/review/$', views.rthon_review),
-    url(r'^radiothon/premium/(?P<amount>\d+(\.\d{2})?)/$', ajax.ajax_get_premiums_at_amount),
+    url(r'^radiothon/premium/(?P<amount>\d+(\.\d{2})?)/$', ajax.ajax_get_premium_forms_at_amount),
     url(r'^radiothon/premium/availability/(?P<premium>\d+)/(?P<options>\w+(/\w+)*)/$', ajax.ajax_get_premium_availability),
     
     # Uncomment the admin/doc line below to enable admin documentation:

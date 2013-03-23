@@ -2,6 +2,7 @@ from django.db import models
 from django.core import validators
 from django.contrib.localflavor.us.models import *
 from django.db.models import signals
+import locale
 import itertools
 import re
 
@@ -16,6 +17,10 @@ class Address(models.Model):
     city = models.CharField(max_length=255)
     state = USStateField()
     zip = models.CharField(max_length=5, validators = [_zip_validator,])
+    
+    def as_email(self):
+        return 'Address Line 1: %s\nAddress Line 2: %s\nCity: %s\nState: %s\nZip: %s\n' % \
+                (self.address_line_1, self.address_line_2, self.city, self.state, self.zip)
 
 class Donor(models.Model):
     #===========================================================================
@@ -26,14 +31,21 @@ class Donor(models.Model):
     phone = PhoneNumberField(null = True, blank = True)
     email = models.EmailField()
     donation_list = models.BooleanField()
+    
+    def as_email(self):
+        return 'Name: %s\n%sPhone: %s\nEmail: %s\nAdded to donation list: %s\n' % \
+                (self.name, self.address.as_email(), self.phone, self.email, self.donation_list)
 
 class HokiePassport(models.Model):
     _number_validator = validators.RegexValidator('^[0-9]*$', "Enter a valid number sequence.")
     number = models.CharField(max_length = 20, validators = [_number_validator,])
+    
+    def __unicode__(self):
+        return self.number
 
 class CreditCard(models.Model):
     _number_validator = validators.RegexValidator('^[0-9]*$', "Enter a valid number sequence.")
-    _expiry_validator = validators.RegexValidator('^[0-9]{2}/[0-9]{2}([0-9]{2})?')
+    _expiry_validator = validators.RegexValidator('^[0-9]?[0-9]/[0-9]{2}([0-9]{2})?', "Enter a valid month/year date string. i.e. 01/15")
     number = models.CharField(max_length = 20, validators = [_number_validator,])
     type = models.CharField(max_length = 1, choices = (('M', "Mastercard"),
                                                        ('V', "Visa"),
@@ -41,6 +53,13 @@ class CreditCard(models.Model):
                                                        ('D', "Discover")))
     expiration = models.CharField(max_length = 7, validators = [_expiry_validator,])
     code = models.IntegerField()
+    
+    def __unicode__(self):
+        return '%s, %s' % (self.type, [ pledge.donor.name for pledge in self.pledge_set ])
+    
+    def as_email(self):
+        return 'Card Number: %s\nType: %s\nExpires: %s\nCode: %s\n' % \
+                (self.number, self.type, self.expiration, self.code)
     
 """These are options, like Size or Color"""
 class PremiumAttribute(models.Model):
@@ -161,7 +180,21 @@ class Pledge(models.Model):
         
     def __unicode__(self):
         return '%s: %s' % (self.date, self.donor.name)
+    
+    def as_email(self):
+        locale.setlocale(locale.LC_ALL, '')
         
+        email = 'Pledge date: %s\nDonation: %s\n' % \
+                    (self.date, locale.currency(self.amount))
+        email += 'Donor Information:\n%s' % self.donor.as_email()
+        email += 'Show: %s\nPledge Taker: %s\nPayment Method: %s\n' % \
+                    (self.show, self.taker, self.payment)
+        if self.credit:
+            email += 'Credit Card Information:\n%s' % self.credit.as_email()
+        if self.hokiepassport:
+            email += 'Hokie Passport Information:\n%s' % self.hokiepassport.as_email()
+        email += 'Extra Info: %s\n' % self.extra_info
+        return email
     
 """This associates donors with premiums, as well as any options that the
 donor may choose, such as color, size, etc""" 
@@ -175,3 +208,7 @@ class PremiumChoice(models.Model):
                                 self.premium.name,
                                 ''.join(['%s: %s, ' % (option.attribute.name, option)
                                          for option in self.options.all()])[:-2])
+    def as_email(self):
+        return '%s:\nChoices:\n%s\n' % (self.premium.name, 
+                           ''.join(['%s: %s, ' % (option.attribute.name, option)
+                                    for option in self.options.all()])[:-2])
