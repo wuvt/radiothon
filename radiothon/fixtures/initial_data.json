@@ -1,0 +1,124 @@
+[
+    {
+        "pk": 1,
+        "model": "radiothon.PremiumAttribute",
+        "fields" : {
+            "name": "Color",
+            "cardinality": 2
+        }
+    },
+    {
+        "pk": 2,
+        "model": "radiothon.PremiumAttribute",
+        "fields" : {
+            "name": "Size",
+            "cardinality": "1"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "Sand",
+            "attribute": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "Heather Red",
+            "attribute": 1
+        }
+    },
+    {
+        "pk": 3,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "Blue",
+            "attribute": 1
+        }
+    },
+    {
+        "pk": 4,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "Pistachio",
+            "attribute": 1
+        }
+    },
+    {
+        "pk": 5,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "Paprika (Orange-Red)",
+            "attribute": 1
+        }
+    },
+    {
+        "pk": 6,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "XS",
+            "attribute": 2
+        }
+    },
+    {
+        "pk": 7,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "S",
+            "attribute": 2
+        }
+    },
+    {
+        "pk": 8,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "M",
+            "attribute": 2
+        }
+    },
+    {
+        "pk": 9,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "L",
+            "attribute": 2
+        }
+    },
+    {
+        "pk": 10,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "XL",
+            "attribute": 2
+        }
+    },
+    {
+        "pk": 11,
+        "model": "radiothon.PremiumAttributeOption",
+        "fields": {
+            "name": "XXL",
+            "attribute": 2
+        }
+    },
+    {
+        "pk": 1,
+        "model": "radiothon.Premium",
+        "fields": {
+            "donation": "65.00",
+            "name": "tee",
+            "attributes": [1, 2]
+        }    
+    },
+    {
+        "pk": 2,
+        "model": "radiothon.Premium",
+        "fields": {
+            "donation": "125.00",
+            "name": "sweater",
+            "attributes": [2]
+        }
+    }
+]

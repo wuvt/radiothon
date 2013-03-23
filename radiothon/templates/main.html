@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block script %}
+<script src='{{STATIC_URL}}pledge.js'></script>
+{% endblock %}
+
+{% block header %}
+    <h2>WUVT Radiothon Pledge Form</h2>
+{% endblock %}
+
+{% block content %}
+<form action="/radiothon/pledge/review/" method="POST">{% csrf_token %}
+    <h2 class='subform_title'>Pledge</h2>
+    <span class='instruction'>Hello, Welcome to WUVT. May I take your pledge?</span>
+    {{ pledge.amount.label }}: {{ pledge.amount }}
+    <span class='instruction inline'>How much would you like to pledge?</span>
+    <span class='instruction'>How would you like to pay?</span>
+    {{ pledge.payment.label }}: {{ pledge.payment }}
+    <span id='credit_subform' style='display: none;'>
+        <h2 class='subform_title'>Credit Card</h2>
+        {{ credit.as_p }}
+    </span>
+    <span id='hokiepassport_subform' style='display: none;'>
+        <h2 class='subform_title'>Hokie Passport</h2>
+        {{ hokiepassport.as_p }}
+    </span>
+    <h2 class='subform_title'>Premium Choice</h2>
+    <p>{{ pledge.premium_delivery.label }}: {{ pledge.premium_delivery }}</p>
+    <h2 class='subform_title'>Donor Information</h2>
+    {{ donor.name.label }}: {{ donor.name }}<br />
+    <span id='address_subform' style='display: none;'>
+    {{ address.as_p }}
+    </span>
+    <p>{{ donor.phone.label }}: {{ donor.phone }}</p>
+    <p>{{ donor.email.label }}: {{ donor.email }}</p>
+    <p>{{ pledge.show.label }}: {{ pledge.show }}</p>
+    <p>{{ pledge.taker.label }}: {{ pledge.taker }}</p>
+    <p>{{ donor.donation_list.label }}: {{ donor.donation_list }}</p>
+    <p>{{ pledge.extra_info.label }}: {{ pledge.extra_info }}</p>
+    {% for premium_choice_formset in premium_formsets %}
+	    {{ premium_choice_formset.management_form }}
+	    {% for form in premium_choice_formset %}
+	        {{ form.as_p }}
+	    {% endfor %}
+	{% endfor %}
+    <input type="submit" value="Submit" />
+</form>
+{% endblock %}

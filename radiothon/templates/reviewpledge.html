@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h2>Review Donation</h2>
+{% endblock %}
+
+{% block content %}
+<h2 class='subform_title'>Pledge</h2>
+<p>Pledge amount: ${{ pledge.amount }}</p>
+<p>Payment type: {{ pledge.get_payment_display }}</p>
+<h2 class='subform_title'>Credit Card</h2>
+<p>Number: {{ pledge.credit.number }}</p>
+<p>Expiration: {{ pledge.credit.expiration }}</p>
+<p>Code: {{ pledge.credit.code }}</p>
+<p>Type: {{ pledge.credit.get_type_display }}</p>
+<h2 class='subform_title'>Hokie Passport</h2>
+<p>ID Number: {{ pledge.hokiepassport.number }}</p>
+<h2 class='subform_title'>Premium Choice</h2>
+<p>Delivery: {{ pledge.get_premium_delivery_display }}</p>
+<h2 class='subform_title'>Donor Information</h2>
+<p>Donor Name: {{ pledge.donor.name }}</p>
+<p>Address line 1: {{ pledge.donor.address.address_line_1. }}</p>
+<p>Address line 2: {{ pledge.donor.address.address_line_2 }}</p>
+<p>City: {{ pledge.donor.address.city }}</p>
+<p>State: {{ pledge.donor.address.state }}</p>
+<p>Zip: {{ pledge.donor.address.zip }}</p>
+<p>Phone: {{ pledge.donor.phone }}</p>
+<p>Email: {{ pledge.donor.email }}</p>
+<p>Show: {{ pledge.show }}</p>
+<p>Pledge taker: {{ pledge.taker }}</p>
+<p>Added to donation list: {{ pledge.donor.donation_list }}</p>
+<p>Extra information: {{ pledge.extra_info }}</p>
+<h2 class='subform_title'>Premiums</h2>
+{% for premium_choice in pledge.premiumchoice_set.all %}
+    <p>{{ premium_choice }}</p>
+{% endfor %}
+{% endblock %}
