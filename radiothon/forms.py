@@ -26,10 +26,27 @@ class PledgeForm(forms.ModelForm):
         model = Pledge 
         exclude = ('donor', 'creditcard', 'hokiepassport')
 
-def premium_choice_form_factory(premium, form = forms.Form):
+class PremiumChoiceFormBase(forms.Form):
+    def clean(self):
+        cleaned_data = super(PremiumChoiceFormBase, self).clean()
+        error = 'Please select an option for attribute %s, ' + \
+                'or check that the donor doesn\'t want a %s'
+        no_want = cleaned_data['no_want']
+        premium = cleaned_data['premium']
+        attrs = [ field for key, field in cleaned_data.iteritems() 
+                 if key is not 'premium' and key is not 'no_want' ]
+        if not no_want: # do want
+            for attr in attrs:
+                if not attr:
+                    raise forms.ValidationError(error % (attr, premium))
+        return cleaned_data
+
+def premium_choice_form_factory(premium, form = PremiumChoiceFormBase):
     """Creates a 'PremiumChoice' type form from a Premium"""
     attrs = {}
     attrs['premium'] = forms.ModelChoiceField(Premium.objects.filter(pk = premium.pk), initial = 1)
+    attrs['want'] = forms.BooleanField(label = "Donor wants this premium.", initial = True, required = False)  
+    valid = validators.RegexValidator('.+')  
     for attribute in premium.attributes.all().order_by('cardinality'):
         attr_opts = PremiumAttributeOption.objects.filter(attribute__premium = premium, attribute = attribute)
         # If an option is set to 0 for all relationships in a Premium,
@@ -40,9 +57,7 @@ def premium_choice_form_factory(premium, form = forms.Form):
             if (empty_rels.count() == rels.count()):
                 attr_opts = attr_opts.exclude(pk = option.pk)
         
-        valid = validators.RegexValidator('.+')
-        
-        # Add the filtered list to the model choice field        
-        attrs['%s' % attribute.name] = forms.ModelChoiceField(attr_opts, validators = [valid,])
+        # Add the filtered list to the model choice field    
+        attrs['%s' % attribute.name] = forms.ModelChoiceField(attr_opts, required = False) # could add validator to force required
         
     return type(premium.simple_name + 'OptionChoiceForm', (forms.Form,), attrs)

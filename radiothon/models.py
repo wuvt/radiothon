@@ -6,9 +6,21 @@ import locale
 import itertools
 import re
 
+class RadiothonSemester(models.Model):
+    semester = models.CharField(max_length = 1, choices = (('F', 'Fall'),
+                                                           ('S', "Spring")))
+    year = models.IntegerField()
+    
+    def __unicode__(self):
+        return self.semester + str(self.year)
+
 class BusinessManager(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
+    terms = models.ManyToManyField(RadiothonSemester)
+    
+    def __unicode__(self):
+        return '%s: %s' % (self.name, self.email)
 
 class Address(models.Model):
     _zip_validator = validators.RegexValidator('^[0-9]{5}$')
@@ -19,7 +31,7 @@ class Address(models.Model):
     zip = models.CharField(max_length=5, validators = [_zip_validator,])
     
     def as_email(self):
-        return 'Address Line 1: %s\nAddress Line 2: %s\nCity: %s\nState: %s\nZip: %s\n' % \
+        return 'Address Line 1: %s\r\nAddress Line 2: %s\r\nCity: %s\r\nState: %s\r\nZip: %s\r\n' % \
                 (self.address_line_1, self.address_line_2, self.city, self.state, self.zip)
 
 class Donor(models.Model):
@@ -33,7 +45,7 @@ class Donor(models.Model):
     donation_list = models.BooleanField()
     
     def as_email(self):
-        return 'Name: %s\n%sPhone: %s\nEmail: %s\nAdded to donation list: %s\n' % \
+        return 'Name: %s\r\n%sPhone: %s\r\nEmail: %s\r\nAdded to donation list: %s\r\n' % \
                 (self.name, self.address.as_email(), self.phone, self.email, self.donation_list)
 
 class HokiePassport(models.Model):
@@ -58,7 +70,7 @@ class CreditCard(models.Model):
         return '%s, %s' % (self.type, [ pledge.donor.name for pledge in self.pledge_set ])
     
     def as_email(self):
-        return 'Card Number: %s\nType: %s\nExpires: %s\nCode: %s\n' % \
+        return 'Card Number: %s\r\nType: %s\r\nExpires: %s\r\nCode: %s\r\n' % \
                 (self.number, self.type, self.expiration, self.code)
     
 """These are options, like Size or Color"""
@@ -87,6 +99,7 @@ class Premium(models.Model):
     donation = models.DecimalField(max_digits = 6, decimal_places = 2)
     name = models.CharField(max_length = 255)
     attributes = models.ManyToManyField(PremiumAttribute, null = True, blank = True)
+    semesters_offered = models.ManyToManyField(RadiothonSemester)
     
     @property
     def simple_name(self):
@@ -184,16 +197,16 @@ class Pledge(models.Model):
     def as_email(self):
         locale.setlocale(locale.LC_ALL, '')
         
-        email = 'Pledge date: %s\nDonation: %s\n' % \
+        email = 'Pledge date: %s\r\nDonation: %s\r\n' % \
                     (self.date, locale.currency(self.amount))
         email += 'Donor Information:\n%s' % self.donor.as_email()
-        email += 'Show: %s\nPledge Taker: %s\nPayment Method: %s\n' % \
+        email += 'Show: %s\r\nPledge Taker: %s\r\nPayment Method: %s\r\n' % \
                     (self.show, self.taker, self.payment)
         if self.credit:
-            email += 'Credit Card Information:\n%s' % self.credit.as_email()
+            email += 'Credit Card Information:\r\n%s' % self.credit.as_email()
         if self.hokiepassport:
             email += 'Hokie Passport Information:\n%s' % self.hokiepassport.as_email()
-        email += 'Extra Info: %s\n' % self.extra_info
+        email += 'Extra Info: %s\r\n' % self.extra_info
         return email
     
 """This associates donors with premiums, as well as any options that the
@@ -209,6 +222,6 @@ class PremiumChoice(models.Model):
                                 ''.join(['%s: %s, ' % (option.attribute.name, option)
                                          for option in self.options.all()])[:-2])
     def as_email(self):
-        return '%s:\nChoices:\n%s\n' % (self.premium.name, 
+        return '%s:\r\nChoices:\r\n%s\r\n' % (self.premium.name, 
                            ''.join(['%s: %s, ' % (option.attribute.name, option)
                                     for option in self.options.all()])[:-2])

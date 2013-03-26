@@ -1,6 +1,23 @@
 [
     {
         "pk": 1,
+        "model": "radiothon.RadiothonSemester",
+        "fields": {
+            "semester": "S",
+            "year": "2013"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "radiothon.BusinessManager",
+        "fields": {
+            "name": "Maddy Caddell",
+            "email": "wuvtbusiness@gmail.com",
+            "terms": [1]
+        }
+    },
+    {
+        "pk": 1,
         "model": "radiothon.PremiumAttribute",
         "fields" : {
             "name": "Color",
@@ -27,7 +44,7 @@
         "pk": 2,
         "model": "radiothon.PremiumAttributeOption",
         "fields": {
-            "name": "Heather Red",
+            "name": "Heather Maroon",
             "attribute": 1
         }
     },
@@ -107,18 +124,70 @@
         "pk": 1,
         "model": "radiothon.Premium",
         "fields": {
-            "donation": "65.00",
-            "name": "tee",
-            "attributes": [1, 2]
+            "donation": "5.00",
+            "name": "WUVT Sticker",
+            "attributes": [],
+            "semesters_offered": [1]
         }    
     },
     {
         "pk": 2,
         "model": "radiothon.Premium",
         "fields": {
+            "donation": "20.00",
+            "name": "WUVT Reusable Grocery Bag",
+            "attributes": [],
+            "semesters_offered": [1]
+        }    
+    },
+    {
+        "pk": 3,
+        "model": "radiothon.Premium",
+        "fields": {
+            "donation": "35.00",
+            "name": "WUVT Mug",
+            "attributes": [],
+            "semesters_offered": [1]
+        }    
+    },
+    {
+        "pk": 4,
+        "model": "radiothon.Premium",
+        "fields": {
+            "donation": "65.00",
+            "name": "WUVT Tee Shirt",
+            "attributes": [1, 2],
+            "semesters_offered": [1]
+        }    
+    },
+    {
+        "pk": 5,
+        "model": "radiothon.Premium",
+        "fields": {
             "donation": "125.00",
-            "name": "sweater",
-            "attributes": [2]
+            "name": "WUVT Crewneck Sweatshirt",
+            "attributes": [2],
+            "semesters_offered": [1]
         }
+    },
+    {
+        "pk": 6,
+        "model": "radiothon.Premium",
+        "fields": {
+            "donation": "500.00",
+            "name": "Overnight stay at The Inn at VT",
+            "attributes": [],
+            "semesters_offered": [1]
+        }    
+    },
+    {
+        "pk": 7,
+        "model": "radiothon.Premium",
+        "fields": {
+            "donation": "907.00",
+            "name": "Custom WUVT Bowling Ball!",
+            "attributes": [],
+            "semesters_offered": [1]
+        }    
     }
 ]

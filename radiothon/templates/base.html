@@ -37,11 +37,11 @@
                 {% endblock %}
             </div>
             <div id="content">
-                {% block content %}
-                <!-- Items like tables and forms go here. -->
-                {% endblock %}
                 {% block errors %}
                     {{ errors }}
+                {% endblock %}
+                {% block content %}
+                <!-- Items like tables and forms go here. -->
                 {% endblock %}
             </div>
             <div id="footer"></div>
