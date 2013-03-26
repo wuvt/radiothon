@@ -44,9 +44,16 @@ class Donor(models.Model):
     email = models.EmailField()
     donation_list = models.BooleanField()
     
+    def __unicode__(self):
+        return '%s, %s' % (self.name, self.email)
+    
     def as_email(self):
         return 'Name: %s\r\n%sPhone: %s\r\nEmail: %s\r\nAdded to donation list: %s\r\n' % \
-                (self.name, self.address.as_email(), self.phone, self.email, self.donation_list)
+                (self.name,
+                 self.address.as_email() if self.address is not None else '',
+                 self.phone,
+                 self.email,
+                 self.donation_list)
 
 class HokiePassport(models.Model):
     _number_validator = validators.RegexValidator('^[0-9]*$', "Enter a valid number sequence.")
@@ -67,7 +74,9 @@ class CreditCard(models.Model):
     code = models.IntegerField()
     
     def __unicode__(self):
-        return '%s, %s' % (self.type, [ pledge.donor.name for pledge in self.pledge_set ])
+        return '%s %s, %s' % (self.get_type_display(),
+                              ('****%s' % str(self.number)[-4:]),
+                              [ pledge.donor.name for pledge in self.pledge_set.all() ])
     
     def as_email(self):
         return 'Card Number: %s\r\nType: %s\r\nExpires: %s\r\nCode: %s\r\n' % \
@@ -199,9 +208,13 @@ class Pledge(models.Model):
         
         email = 'Pledge date: %s\r\nDonation: %s\r\n' % \
                     (self.date, locale.currency(self.amount))
+        email += 'Premiums and Choices:\r\n'
+        for choice in self.premiumchoice_set.all():
+            email += choice.as_email()
+        email += '\r\n'
         email += 'Donor Information:\n%s' % self.donor.as_email()
         email += 'Show: %s\r\nPledge Taker: %s\r\nPayment Method: %s\r\n' % \
-                    (self.show, self.taker, self.payment)
+                    (self.show, self.taker, self.get_payment_display())
         if self.credit:
             email += 'Credit Card Information:\r\n%s' % self.credit.as_email()
         if self.hokiepassport:
@@ -222,6 +235,6 @@ class PremiumChoice(models.Model):
                                 ''.join(['%s: %s, ' % (option.attribute.name, option)
                                          for option in self.options.all()])[:-2])
     def as_email(self):
-        return '%s:\r\nChoices:\r\n%s\r\n' % (self.premium.name, 
+        return '%s. %s\r\n' % (self.premium.name, 
                            ''.join(['%s: %s, ' % (option.attribute.name, option)
                                     for option in self.options.all()])[:-2])

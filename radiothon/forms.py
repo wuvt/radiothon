@@ -1,8 +1,7 @@
 from django import forms
-from django.db.models import Q
-from models import *
-import re
-from django.db.models.aggregates import Count
+from models import (Address, Donor, HokiePassport,
+                    CreditCard, Pledge, Premium,
+                    PremiumAttributeOption)
 
 class AddressForm(forms.ModelForm):
     class Meta:
@@ -45,8 +44,7 @@ def premium_choice_form_factory(premium, form = PremiumChoiceFormBase):
     """Creates a 'PremiumChoice' type form from a Premium"""
     attrs = {}
     attrs['premium'] = forms.ModelChoiceField(Premium.objects.filter(pk = premium.pk), initial = 1)
-    attrs['want'] = forms.BooleanField(label = "Donor wants this premium.", initial = True, required = False)  
-    valid = validators.RegexValidator('.+')  
+    attrs['want'] = forms.BooleanField(label = "Donor wants this premium.", initial = True, required = False)
     for attribute in premium.attributes.all().order_by('cardinality'):
         attr_opts = PremiumAttributeOption.objects.filter(attribute__premium = premium, attribute = attribute)
         # If an option is set to 0 for all relationships in a Premium,

@@ -12,8 +12,8 @@
             <div id="navigation">
                 {% block navigation %}
                 <ul>
-                    <li class="nav_item nav_first">WUVT Radiothon Pledges</li>
-                    <!-- <li class="nav_item"><a href="/library">Search</a></li> -->
+                    <li class="nav_item nav_first"><a href="{% url index %}">WUVT Radiothon</a></li>
+                    <li class="nav_item"><a href="{% url pledge-form %}">Pledge</a></li>
                     {% block navigation_items %}
                     <!-- 
                         Breadcrumbs-style links go here, i.e.

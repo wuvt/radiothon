@@ -146,6 +146,12 @@ h2.subform_title
     display: block;
 }
 
+h2.error_title
+{
+    color: red;
+    display: block;	
+}
+
 .fcc
 {
     font-family: Arial;

@@ -10,7 +10,10 @@
 
 {% block errors %}
 {% if errors %}
-    {{ errors }}
+    <h2 class='error_title'>Errors</h2>
+    {% for error in errors %}
+        {{ forloop.counter }}. {{ error }}<br>
+    {% endfor %}
 {% endif %}
 {% endblock %}
 
@@ -26,12 +29,15 @@
     <div id='credit_subform' style='display: none;'>
         <h2 class='subform_title'>Credit Card</h2>
         <span class='mc_script'>May I take your credit card information?</span>
-        {{ credit.as_p }}
+        <p>{{ credit.number.label }}: {{ credit.number }}</p>
+	    <p>{{ credit.type.label }}: {{ credit.type }}</p>
+	    <p>{{ credit.expiration.label }}: {{ credit.expiration }}</p>
+        <p>{{ credit.code.label }}: {{ credit.code }}</p>
     </div>
     <div id='hokiepassport_subform' style='display: none;'>
         <h2 class='subform_title'>Hokie Passport</h2>
         <span class='mc_script'>May I take your Hokie Passport number?</span>
-        {{ hokiepassport.as_p }}
+        <p>{{ hokiepassport.number.label }}: {{ hokiepassport.number }}</p>
     </div>
     <div id='premiums_subform' style='display: none;'>
         <h2 class="subform_title">Premiums</h2>

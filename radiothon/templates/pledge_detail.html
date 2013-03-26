@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 
+{% block navigation_items %}
+    <li><a href=".">{{ pledge.donor.name }}</a></li>
+{% endblock %}
+
 {% block header %}
-    <h2>Review Donation</h2>
+    <h2>Review Submitted</h2>
 {% endblock %}
 
 {% block content %}

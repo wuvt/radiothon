@@ -4,3 +4,4 @@ mysql-python==1.2.3
 python-memcached==1.48
 requests==1.0.4
 django==1.4.3
+django-registration==0.8

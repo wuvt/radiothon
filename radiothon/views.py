@@ -1,12 +1,23 @@
-from django.shortcuts import render_to_response, get_object_or_404, redirect
-from radiothon.forms import *
+from radiothon.forms import (PledgeForm, DonorForm, AddressForm,
+                              CreditCardForm, HokiePassportForm)
+from radiothon.models import (Pledge, Premium, BusinessManager,
+                               CreditCard, HokiePassport, Donor,
+                                Address, PremiumChoice, PremiumAttributeOption)
+from radiothon.forms import premium_choice_form_factory
+from radiothon.settings_local_development import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_PORT
 from django.forms.formsets import formset_factory
-from django.db import IntegrityError
-from django.template.context import RequestContext
-import smtplib
-from radiothon.settings_local_development import WUVT_IT_EMAIL
+from django.shortcuts import render_to_response, redirect
 from django.views.generic.detail import DetailView
+from django.views.generic import TemplateView
+from django.template.context import RequestContext
+import smtplib, itertools
+from django.contrib.auth.decorators import login_required
 
+
+class MainView(TemplateView):
+    template_name = "index.html"
+
+@login_required(login_url = '/radiothon/accounts/login')
 def rthon_pledge(request):
     pledge_form = PledgeForm(request.POST or None, prefix = "pledge_form")
     donor_form = DonorForm(request.POST or None, prefix = "donor_form")
@@ -16,7 +27,7 @@ def rthon_pledge(request):
     
     premium_formsets = create_premium_formsets(request)
     
-    return render_to_response('main.html', {
+    return render_to_response('pledge_form.html', {
         'pledge': pledge_form,
         'donor': donor_form,
         'address': address_form,
@@ -44,7 +55,7 @@ def create_premium_formsets(request, queryset = None):
         premium_forms.append(FormsetClass(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name ))
     return premium_forms
 
-def simple_send_email(sender, recipient, subject, message, server = "smtp.gmail.com", port = 587):
+def simple_send_email(sender, recipient, subject, message, server = EMAIL_HOST, port = EMAIL_PORT):
     """Sends an e-mail to the specified recipient."""
     headers = ["From: " + sender,
                "Subject: " + subject,
@@ -58,7 +69,7 @@ def simple_send_email(sender, recipient, subject, message, server = "smtp.gmail.
     session.ehlo()
     session.starttls()
     session.ehlo()
-    session.login(sender, WUVT_IT_EMAIL)
+    session.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
      
     session.sendmail(sender, recipient, headers + "\r\n\r\n" + message)
     session.close()
@@ -71,6 +82,7 @@ def email_to_business_manager(pledge):
 
     simple_send_email(sender,current_bm.email, subject, message)
 
+@login_required
 def rthon_submit(request):
     pledge_form = PledgeForm(request.POST or None, prefix = "pledge_form")
     donor_form = DonorForm(request.POST or None, prefix = "donor_form")
@@ -186,10 +198,10 @@ def rthon_submit(request):
             if len(errors) == 0:
                 email_to_business_manager(pledge)                    
         else:
-            errors.append(pledge_form.errors);
+            errors.extend([ '%s: %s' % (key, value) for key, value in dict(pledge_form.errors).items() ])
         
         if len(errors) > 0:
-            return render_to_response('main.html', {
+            return render_to_response('pledge_form.html', {
                 'errors': errors,
                 'pledge': pledge_form,
                 'donor': donor_form,
@@ -198,7 +210,11 @@ def rthon_submit(request):
                 'hokiepassport': hokiepassport_form,
                 }, context_instance=RequestContext(request))
     
+    # We saved everything! Let's redirect, man.
     return redirect('/radiothon/pledge/%s' % str(pledge.pk))
+
+def edict_to_dict(edict):
+    return dict(edict)
 
 class PledgeDetail(DetailView):
     queryset = Pledge.objects.all()
