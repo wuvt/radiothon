@@ -204,7 +204,7 @@ class Pledge(models.Model):
         return '%s: %s' % (self.date, self.donor.name)
     
     def as_email(self):
-        locale.setlocale(locale.LC_ALL, '')
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         
         email = 'Pledge date: %s\r\nDonation: %s\r\n' % \
                     (self.date, locale.currency(self.amount))

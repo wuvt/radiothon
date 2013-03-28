@@ -4,7 +4,7 @@ from radiothon.models import (Pledge, Premium, BusinessManager,
                                CreditCard, HokiePassport, Donor,
                                 Address, PremiumChoice, PremiumAttributeOption)
 from radiothon.forms import premium_choice_form_factory
-from radiothon.settings_local_development import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_PORT
+from radiothon.settings_local import EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_PORT
 from django.forms.formsets import formset_factory
 from django.shortcuts import render_to_response, redirect
 from django.views.generic.detail import DetailView

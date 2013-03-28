@@ -4,3 +4,5 @@
 settings_*.py
 .project
 .pydevproject
+venv*
+wsgi.py
