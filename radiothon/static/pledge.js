@@ -58,7 +58,7 @@ var add_premium_eventhandlers = function(){
 			/* Get the attribute options' premium's id */
 			var option_id = ''
 			var premium_id = ''
-			var selector = 'select[id="id_{0}_premium_choice_formset-0-premium"]'.format(premium_name)
+			var selector = 'select[id="id_{0}_premium_choice_formset-premium"]'.format(premium_name)
 			premium_id = $('option:selected', selector).val();
 			
 			/* Add the event handler that will send the AJAX query,
@@ -72,7 +72,7 @@ var add_premium_eventhandlers = function(){
 				// TODO: Don't show all of your own attribute's option when selecting '-------'
 				if ($('option:selected:first',this).val() == ''){
 					var unselected_attribute = $(this)
-					$('option','select[id*="{0}_premium_choice_formset-0-"]'.format(premium_name)).each(function(){
+					$('option','select[id*="{0}_premium_choice_formset-"]'.format(premium_name)).each(function(){
 						if (!($(this).parents('select')[0] === unselected_attribute[0])){
 							$(this).showOption();
 						}
@@ -93,7 +93,7 @@ var add_premium_eventhandlers = function(){
 						for(var i = 0; i < data.length; i++){
 							var attribute = data[i];
 							// For each element matching this (which should just be one)
-							$('option','select[id="id_{0}_premium_choice_formset-0-{1}"]'.format(premium_name, attribute.attribute)).each(function(){
+							$('option','select[id="id_{0}_premium_choice_formset-{1}"]'.format(premium_name, attribute.attribute)).each(function(){
 								if (!isNaN(parseInt(this.value))){
 									if($.inArray(parseInt(this.value),attribute.available_options) == -1){
 										$(this).hideOption();
@@ -122,7 +122,7 @@ var donation_update = function(){
 			var formhtml = '';
 			for(var i = 0; i < data.length; i++){
 				formhtml += '<h4 class="subform_title">{0}</h2>'.format(data[i].name);
-				formhtml += data[i].formset;
+				formhtml += data[i].form;
 				/* Create/Unhide the premium forms */
 			}
 			formarea.html(formhtml);

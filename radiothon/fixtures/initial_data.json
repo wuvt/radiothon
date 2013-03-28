@@ -125,7 +125,7 @@
         "model": "radiothon.Premium",
         "fields": {
             "donation": "5.00",
-            "name": "WUVT Sticker",
+            "name": "One WUVT Sticker",
             "attributes": [],
             "semesters_offered": [1]
         }    

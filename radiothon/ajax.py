@@ -20,7 +20,7 @@ def ajax_get_premium_forms_at_amount(request, amount):
     # This rides on a pretty flimsy assumption that create_premium_formsets
     # returns the formsets in the same order as the premiums were sent
     premium_formsets = dict(zip(premiums, create_premium_formsets(None, premiums)))
-    json_list = [ {'name': premium.name, 'management_form': formset.management_form.as_p(), 'formset': formset.as_p()} for (premium, formset) in premium_formsets.iteritems() ]
+    json_list = [ {'name': premium.name, 'form': form.as_p()} for (premium, form) in premium_formsets.iteritems() ]
     json = simplejson.dumps(json_list)
     return HttpResponse(json, content_type="application/json")
 

@@ -51,8 +51,9 @@ def create_premium_formsets(request, queryset = None):
     
     for premium in list(queryset):
         PremiumChoiceForm = premium_choice_form_factory(premium)
-        FormsetClass = formset_factory(PremiumChoiceForm)
-        premium_forms.append(FormsetClass(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name ))
+        #FormsetClass = formset_factory(PremiumChoiceForm)
+        #premium_forms.append(FormsetClass(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name ))
+        premium_forms.append(PremiumChoiceForm(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name))
     return premium_forms
 
 def simple_send_email(sender, recipient, subject, message, server = EMAIL_HOST, port = EMAIL_PORT):
@@ -165,33 +166,31 @@ def rthon_submit(request):
             
             if len(errors) == 0:
                 pledge.save()
-                for formset in premium_choice_formsets:
-                    for form in formset:
-                        # For some reason, even if fields are left blank,
-                        # the premium form's is_valid remains true.
-                        # GAH killin' me Django
-                        if (form.is_valid() and 'premium' in form.cleaned_data.keys()):
-                            
-                            if (form.cleaned_data['want'] is False):
-                                continue
-                            
-                            premium = form.cleaned_data['premium']
-                            instance = PremiumChoice(premium = premium,
-                                                     pledge = pledge)
-                            #try:
-                            instance.save()
-                            #except IntegrityError:
-                                #break
-                            for value in form.cleaned_data.values():
-                                if (type(value) is PremiumAttributeOption):
-                                    instance.options.add(value)
-                        else:
-                            if (len(form.errors) > 0):
-                                errors.append(form.errors)
-                    if len(errors) > 0:
-                        PremiumChoice.objects.filter(pledge = pledge).delete()
-                        if pledge.id != None:
-                            pledge.delete()
+                for form in premium_choice_formsets:
+                    # For some reason, even if fields are left blank,
+                    # the premium form's is_valid remains true.
+                    # GAH killin' me Django
+                    if (form.is_valid() and 'premium' in form.cleaned_data.keys()): #form.fields['premium'].queryset[0]
+                        if (form.cleaned_data['want'] is False):
+                            continue
+                        
+                        premium = form.cleaned_data['premium']
+                        instance = PremiumChoice(premium = premium,
+                                                 pledge = pledge)
+                        #try:
+                        instance.save()
+                        #except IntegrityError:
+                            #break
+                        for value in form.cleaned_data.values():
+                            if (type(value) is PremiumAttributeOption):
+                                instance.options.add(value)
+                    else:
+                        if (len(form.errors) > 0):
+                            errors.append(form.errors)
+                if len(errors) > 0:
+                    PremiumChoice.objects.filter(pledge = pledge).delete()
+                    if pledge.id != None:
+                        pledge.delete()
                         
             # If we've successfully parsed all the data
             # email it to the business manager

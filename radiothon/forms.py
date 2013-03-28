@@ -25,16 +25,16 @@ class PledgeForm(forms.ModelForm):
         model = Pledge 
         exclude = ('donor', 'creditcard', 'hokiepassport')
 
-class PremiumChoiceFormBase(forms.Form):
+class PremiumChoiceFormBase(forms.BaseForm):
     def clean(self):
         cleaned_data = super(PremiumChoiceFormBase, self).clean()
         error = 'Please select an option for attribute %s, ' + \
                 'or check that the donor doesn\'t want a %s'
-        no_want = cleaned_data['no_want']
+        want = cleaned_data['want']
         premium = cleaned_data['premium']
         attrs = [ field for key, field in cleaned_data.iteritems() 
-                 if key is not 'premium' and key is not 'no_want' ]
-        if not no_want: # do want
+                 if key is not 'premium' and key is not 'want' ]
+        if not want: # do want
             for attr in attrs:
                 if not attr:
                     raise forms.ValidationError(error % (attr, premium))
