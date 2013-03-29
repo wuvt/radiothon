@@ -22,24 +22,24 @@
     <h2 class='subform_title'>Pledge</h2>
     <span class='mc_script'>Hello, thank you for calling WUVT. May I take your pledge?</span>
     {{ pledge.amount.label }}: ${{ pledge.amount }} <span class='mc_script inline'>How much would you like to pledge?</span>
-    
+    {{ pledge.amount.errors }} 
     <span class='mc_script'>Would you like to pay by Credit Card, Hokie Passport, Cash or Check?</span>
-    {{ pledge.payment.label }}: {{ pledge.payment }}
+    {{ pledge.payment.label }}: {{ pledge.payment }} {{ pledge.payment.errors }}
     <div id='check_subform' style='display: none;'>
         <span class='mc_script'>All checks made out to WUVT</span>
     </div>
     <div id='credit_subform' style='display: none;'>
         <h2 class='subform_title'>Credit Card</h2>
         <span class='mc_script'>May I take your credit card information?</span>
-        <p>{{ credit.number.label }}: {{ credit.number }}</p>
-	    <p>{{ credit.type.label }}: {{ credit.type }}</p>
-	    <p>{{ credit.expiration.label }}: {{ credit.expiration }}</p>
-        <p>{{ credit.code.label }}: {{ credit.code }}</p>
+        <p>{{ credit.number.label }}: {{ credit.number }} {{ credit.number.errors }}</p>
+	    <p>{{ credit.type.label }}: {{ credit.type }} {{ credit.type.errors }}</p>
+	    <p>{{ credit.expiration.label }}: {{ credit.expiration }} {{ credit.expiration.errors }}</p>
+        <p>{{ credit.code.label }}: {{ credit.code }} {{ credit.code.errors }}</p>
     </div>
     <div id='hokiepassport_subform' style='display: none;'>
         <h2 class='subform_title'>Hokie Passport</h2>
         <span class='mc_script'>May I take your Hokie Passport number?</span>
-        <p>{{ hokiepassport.number.label }}: {{ hokiepassport.number }}</p>
+        {{ hokiepassport.as_p }}
     </div>
     <div id='premiums_subform' style='display: none;'>
         <h2 class="subform_title">Premiums</h2>
@@ -49,18 +49,18 @@
         <span id='premiums_subform_formarea'></span>
     </div>
     <h2 class='subform_title'>Donor Information</h2>
-    <p>{{ donor.name.label }}: {{ donor.name }}</p>
+    <p>{{ donor.name.label }}: {{ donor.name }} {{ donor.name.errors }}</p>
     <span id='address_subform' style='display: none;'>
     <span class='mc_script'>May I write down your address?</span>
     {{ address.as_p }}
     </span>
-    <p>{{ donor.phone.label }}: {{ donor.phone }} (optional)</p>
-    <p>{{ donor.email.label }}: {{ donor.email }}</p>
-    <p>{{ pledge.show.label }}: {{ pledge.show }}</p>
-    <p>{{ pledge.taker.label }}: {{ pledge.taker }}</p>
+    <p>{{ donor.phone.label }}: {{ donor.phone }} (optional) {{ donor.phone.errors }}</p>
+    <p>{{ donor.email.label }}: {{ donor.email }} {{ donor.email.errors }}</p>
+    <p>{{ pledge.show.label }}: {{ pledge.show }} {{ donor.show.errors }}</p>
+    <p>{{ pledge.taker.label }}: {{ pledge.taker }} {{ pledge.taker.errors }}</p>
     <p>{{ donor.donation_list.label }}: {{ donor.donation_list }} <span class='mc_script inline'>Thank you for donating! Would you like your name included in a Thank You list in our Fall Newsletter?</span></p>
     <span class='mc_node inline'>Please enter any other relevant information here (Does the donor want a tax letter, are they donating online, etc.)</span>
-    <p>{{ pledge.extra_info.label }}: {{ pledge.extra_info }} (optional)</p>
+    <p>{{ pledge.extra_info.label }}: {{ pledge.extra_info }} (optional) {{ pledge.extra_info.errors }}</p>
     <input type="submit" value="Submit" />
 </form>
 {% endblock %}

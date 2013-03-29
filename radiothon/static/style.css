@@ -114,7 +114,17 @@ a:link, a:visited, a:hover, a:active
 	color: black;
 	background-color: lightblue;
 }
+ul.errorlist {
+    list-style: none;
+}
+ul.errorlist li:before {
+    padding-right: 5px;
+    content: "^";
+}
 
+/* For text meant to be
+read as part of the script for
+taking pledges */
 .mc_script
 {
     margin: 5px;
@@ -122,6 +132,9 @@ a:link, a:visited, a:hover, a:active
     display: block;
 }
 
+/* For direction meant to be
+followed by pledge-takers but not
+read aloud */
 .mc_note
 {
     margin: 5px;
