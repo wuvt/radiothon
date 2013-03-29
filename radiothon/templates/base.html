@@ -38,7 +38,7 @@
             </div>
             <div id="content">
                 {% block errors %}
-                    {{ errors }}
+                    {{ errors|safe }}
                 {% endblock %}
                 {% block content %}
                 <!-- Items like tables and forms go here. -->

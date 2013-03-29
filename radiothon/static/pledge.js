@@ -36,6 +36,14 @@ var add_premium_eventhandlers = function(){
 	/* Hide unavailable options based on attribute choices */
 	var avail_url = '/radiothon/premium/availability/{0}/'
 	
+	$('form').bind("keyup", function(e) {
+		var code = e.keyCode || e.which; 
+		if (code == 13) {               
+			e.preventDefault();
+			return false;
+		}
+	});
+		
 	/* On document load,
 	 * Add event handlers to each of the attribute dropdowns.
 	 * These event handlers make AJAX requests that determine
@@ -154,6 +162,12 @@ var payment_update = function(){
 	}else{
 		$('#credit_subform').hide('slow');
 		$('#hokiepassport_subform').hide('slow');
+	}
+	
+	if (payment_method == 'H'){
+		$('#check_subform').show('slow');
+	}else{
+		$('#check_subform').hide('slow');
 	}
 	
 	/* If it's not credit, and the Delivery 

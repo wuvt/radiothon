@@ -204,10 +204,10 @@ class Pledge(models.Model):
         return '%s: %s' % (self.date, self.donor.name)
     
     def as_email(self):
-        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        #locale.setlocale(locale.LC_ALL, 'en_US')#not that important...
         
         email = 'Pledge date: %s\r\nDonation: %s\r\n' % \
-                    (self.date, locale.currency(self.amount))
+                    (self.date, self.amount)# locale.currency(self.amount))
         email += 'Premiums and Choices:\r\n'
         for choice in self.premiumchoice_set.all():
             email += choice.as_email()

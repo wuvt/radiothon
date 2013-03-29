@@ -12,7 +12,7 @@
 {% if errors %}
     <h2 class='error_title'>Errors</h2>
     {% for error in errors %}
-        {{ forloop.counter }}. {{ error }}<br>
+        {{ forloop.counter }}. {{ error|safe }}<br>
     {% endfor %}
 {% endif %}
 {% endblock %}
@@ -25,7 +25,9 @@
     
     <span class='mc_script'>Would you like to pay by Credit Card, Hokie Passport, Cash or Check?</span>
     {{ pledge.payment.label }}: {{ pledge.payment }}
-    
+    <div id='check_subform' style='display: none;'>
+        <span class='mc_script'>All checks made out to WUVT</span>
+    </div>
     <div id='credit_subform' style='display: none;'>
         <h2 class='subform_title'>Credit Card</h2>
         <span class='mc_script'>May I take your credit card information?</span>
