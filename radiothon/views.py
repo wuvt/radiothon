@@ -25,81 +25,16 @@ def rthon_pledge(request):
     credit_form = CreditCardForm(request.POST or None, prefix = "creditcard_form")
     hokiepassport_form = HokiePassportForm(request.POST or None, prefix = "hokiepassport_form")
     
-    premium_formsets = create_premium_formsets(request)
-    
-    return render_to_response('pledge_form.html', {
-        'pledge': pledge_form,
-        'donor': donor_form,
-        'address': address_form,
-        'credit': credit_form,
-        'hokiepassport': hokiepassport_form,
-        'premium_formsets': premium_formsets,
-        }, context_instance=RequestContext(request))
-
-def create_premium_formsets(request, queryset = None):
-    premium_forms = []
-    post_data = request.POST if request is not None else None
-    if queryset is None:
-        queryset = Premium.objects.all();
-        
-    # make sure there are some premium choice formsets in post
-    if (post_data is not None):
-        premium_choice_formset_post = [ k for k in post_data.keys() 
-                                       if 'premium_choice_formset' in k]
-        if (len(premium_choice_formset_post) == 0):
-            return []
-    
-    for premium in list(queryset):
-        PremiumChoiceForm = premium_choice_form_factory(premium)
-        #FormsetClass = formset_factory(PremiumChoiceForm)
-        #premium_forms.append(FormsetClass(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name ))
-        premium_forms.append(PremiumChoiceForm(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name))
-    return premium_forms
-
-def simple_send_email(sender, recipient, subject, message, server = EMAIL_HOST, port = EMAIL_PORT):
-    """Sends an e-mail to the specified recipient."""
-    headers = ["From: " + sender,
-               "Subject: " + subject,
-               "To: " + recipient,
-               "MIME-Version: 1.0",
-               "Content-Type: text/plain"]
-    headers = "\r\n".join(headers)
-
-    session = smtplib.SMTP(server, port)
-    
-    session.ehlo()
-    session.starttls()
-    session.ehlo()
-    session.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-     
-    session.sendmail(sender, recipient, headers + "\r\n\r\n" + message)
-    session.close()
-
-def email_to_business_manager(pledge):
-    subject = 'Radiothon Pledge System: %s' % pledge.donor.name
-    message = pledge.as_email()
-    sender = 'WUVT.IT@gmail.com'
-    current_bm = BusinessManager.objects.order_by('-terms__year', 'terms__semester')[0]
-
-    simple_send_email(sender,current_bm.email, subject, message)
-
-@login_required
-def rthon_submit(request):
-    pledge_form = PledgeForm(request.POST or None, prefix = "pledge_form")
-    donor_form = DonorForm(request.POST or None, prefix = "donor_form")
-    address_form = AddressForm(request.POST or None, prefix = "address_form")
-    credit_form = CreditCardForm(request.POST or None, prefix = "creditcard_form")
-    hokiepassport_form = HokiePassportForm(request.POST or None, prefix = "hokiepassport_form")
-    
-    pledge = None
     errors = []
-    # attempt to get from existing records.
+    premium_choice_forms = []
+    
     if (request.POST):
+        pledge = None
         if (pledge_form.is_valid()):
             pledge = pledge_form.save(commit = False)
             
             premiums_allowed = Premium.objects.filter(donation__lte = pledge_form.cleaned_data['amount'])
-            premium_choice_formsets = create_premium_formsets(request, premiums_allowed)
+            premium_choice_forms = create_premium_formsets(request, premiums_allowed)
             
             if pledge_form.cleaned_data['payment'] == 'R':
                 # You can have a Credit card OR a Hokiepassport or Neither but NOT both
@@ -166,7 +101,7 @@ def rthon_submit(request):
             
             if len(errors) == 0:
                 pledge.save()
-                for form in premium_choice_formsets:
+                for form in premium_choice_forms:
                     # For some reason, even if fields are left blank,
                     # the premium form's is_valid remains true.
                     # GAH killin' me Django
@@ -199,21 +134,66 @@ def rthon_submit(request):
         else:
             errors.extend([ '%s: %s' % (key, value) for key, value in dict(pledge_form.errors).items() ])
         
-        if len(errors) > 0:
-            return render_to_response('pledge_form.html', {
-                'errors': errors,
-                'pledge': pledge_form,
-                'donor': donor_form,
-                'address': address_form,
-                'credit': credit_form,
-                'hokiepassport': hokiepassport_form,
-                }, context_instance=RequestContext(request))
+        if len(errors) == 0:
+            return redirect('/radiothon/pledge/%s' % str(pledge.pk))
+    else:
+        premium_choice_forms = create_premium_formsets(request)
     
-    # We saved everything! Let's redirect, man.
-    return redirect('/radiothon/pledge/%s' % str(pledge.pk))
+    return render_to_response('pledge_form.html', {
+        'pledge': pledge_form,
+        'donor': donor_form,
+        'address': address_form,
+        'credit': credit_form,
+        'hokiepassport': hokiepassport_form,
+        'premium_formsets': premium_choice_forms,
+        }, context_instance=RequestContext(request))
 
-def edict_to_dict(edict):
-    return dict(edict)
+def create_premium_formsets(request, queryset = None):
+    premium_forms = []
+    post_data = request.POST if request is not None else None
+    if queryset is None:
+        queryset = Premium.objects.all();
+        
+    # make sure there are some premium choice formsets in post
+    if (post_data is not None):
+        premium_choice_formset_post = [ k for k in post_data.keys() 
+                                       if 'premium_choice_formset' in k]
+        if (len(premium_choice_formset_post) == 0):
+            return []
+    
+    for premium in list(queryset):
+        PremiumChoiceForm = premium_choice_form_factory(premium)
+        #FormsetClass = formset_factory(PremiumChoiceForm)
+        #premium_forms.append(FormsetClass(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name ))
+        premium_forms.append(PremiumChoiceForm(post_data, prefix = '%s_premium_choice_formset' % premium.simple_name))
+    return premium_forms
+
+def simple_send_email(sender, recipient, subject, message, server = EMAIL_HOST, port = EMAIL_PORT):
+    """Sends an e-mail to the specified recipient."""
+    headers = ["From: " + sender,
+               "Subject: " + subject,
+               "To: " + recipient,
+               "MIME-Version: 1.0",
+               "Content-Type: text/plain"]
+    headers = "\r\n".join(headers)
+
+    session = smtplib.SMTP(server, port)
+    
+    session.ehlo()
+    session.starttls()
+    session.ehlo()
+    session.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+     
+    session.sendmail(sender, recipient, headers + "\r\n\r\n" + message)
+    session.close()
+
+def email_to_business_manager(pledge):
+    subject = 'Radiothon Pledge System: %s' % pledge.donor.name
+    message = pledge.as_email()
+    sender = 'WUVT.IT@gmail.com'
+    current_bm = BusinessManager.objects.order_by('-terms__year', 'terms__semester')[0]
+
+    simple_send_email(sender,current_bm.email, subject, message)
 
 class PledgeDetail(DetailView):
     queryset = Pledge.objects.all()

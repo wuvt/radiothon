@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="/radiothon/pledge/submit/" method="POST">{% csrf_token %}
+<form action="/radiothon/pledge/" method="POST">{% csrf_token %}
     <h2 class='subform_title'>Pledge</h2>
     <span class='mc_script'>Hello, thank you for calling WUVT. May I take your pledge?</span>
     {{ pledge.amount.label }}: ${{ pledge.amount }} <span class='mc_script inline'>How much would you like to pledge?</span>
