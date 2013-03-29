@@ -43,7 +43,7 @@ var add_premium_eventhandlers = function(){
 			return false;
 		}
 	});
-		
+	
 	/* On document load,
 	 * Add event handlers to each of the attribute dropdowns.
 	 * These event handlers make AJAX requests that determine
@@ -180,10 +180,10 @@ var payment_update = function(){
 	}
 }
 
-$(document).ready(function(){
-	
+$(document).ready(function(){	
 	donation_update();
 	payment_update();
+	
 	/* Add the event handler for changes in the premium forms */
 	/* Unhide/Create premium forms */
 	$('#id_pledge_form-amount').change(function(){

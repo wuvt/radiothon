@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 
+{% block script %}
+<script>
+// Clear the goddamn form  when you click back
+// so people don't submit some other donor's stuff
+// Technically 'Prevents Browser Form Cacheing'
+window.onunload = function (){
+    location.replace('/radiothon/pledge');
+}
+</script>
+{% endblock %}
+
 {% block navigation_items %}
     <li><a href=".">{{ pledge.donor.name }}</a></li>
 {% endblock %}

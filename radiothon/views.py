@@ -12,6 +12,8 @@ from django.views.generic import TemplateView
 from django.template.context import RequestContext
 import smtplib, itertools
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.core.context_processors import request
 
 
 class MainView(TemplateView):
@@ -146,6 +148,7 @@ def rthon_pledge(request):
         'credit': credit_form,
         'hokiepassport': hokiepassport_form,
         'premium_formsets': premium_choice_forms,
+        'sending_to': BusinessManager.objects.order_by('-terms__year', 'terms__semester')[0].email,
         }, context_instance=RequestContext(request))
 
 def create_premium_formsets(request, queryset = None):
@@ -197,7 +200,7 @@ def email_to_business_manager(pledge):
 
 class PledgeDetail(DetailView):
     queryset = Pledge.objects.all()
-    template_name = 'pledge_detail.html'
+    template_name = 'pledge_detail.html'    
     
 def get_object_or_none(model, **kwargs):
     try:
