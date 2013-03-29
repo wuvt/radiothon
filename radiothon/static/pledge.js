@@ -54,7 +54,7 @@ var add_premium_eventhandlers = function(){
 		var attribute = '';
 		var premium = '';
 		
-		var regexp = 'premium_choice_formset\\-\\d+\\-(\\w+)';
+		var regexp = 'premium_choice_formset\\-(\\w+)';
 		var re = new RegExp(regexp,'i');
 		attribute = $(this).attr('id').match(re)[1];
 		
