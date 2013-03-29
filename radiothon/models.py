@@ -184,7 +184,7 @@ signals.post_save.connect(receiver = update_premium, sender = Premium)
 signals.pre_delete.connect(receiver = update_premium_attr_rel_delete, sender = PremiumAttributeOption)
     
 class Pledge(models.Model):
-    date = models.DateField(auto_now = True)
+    created = models.DateTimeField(auto_now = True)
     amount = models.DecimalField(max_digits = 6, decimal_places = 2)
     donor = models.ForeignKey(Donor)
     show = models.CharField(max_length=255, blank = True) # Match this with Quicktrack?
@@ -201,13 +201,13 @@ class Pledge(models.Model):
     extra_info = models.CharField(max_length=512, blank = True)
         
     def __unicode__(self):
-        return '%s: %s' % (self.date, self.donor.name)
+        return '%s: %s' % (self.created, self.donor.name)
     
     def as_email(self):
         #locale.setlocale(locale.LC_ALL, 'en_US')#not that important...
-        
-        email = 'Pledge date: %s\r\nDonation: %s\r\n' % \
-                    (self.date, self.amount)# locale.currency(self.amount))
+        email = '==============================================================\r\n'
+        email += 'Pledge date: %s\r\nDonation: %s\r\n' % \
+                    (self.created, self.amount)# locale.currency(self.amount))
         email += 'Premiums and Choices:\r\n'
         for choice in self.premiumchoice_set.all():
             email += choice.as_email()
@@ -220,6 +220,7 @@ class Pledge(models.Model):
         if self.hokiepassport:
             email += 'Hokie Passport Information:\n%s' % self.hokiepassport.as_email()
         email += 'Extra Info: %s\r\n' % self.extra_info
+        email += '==============================================================\r\n'
         return email
     
 """This associates donors with premiums, as well as any options that the

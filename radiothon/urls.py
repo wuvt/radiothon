@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^radiothon/pledge/(?P<pk>\d+)/$', login_required(PledgeDetail.as_view(), login_url = '/radiothon/accounts/login'), name = 'pledge-detail'),
     url(r'^radiothon/premium/(?P<amount>\d+(\.\d{2})?)/$', ajax.ajax_get_premium_forms_at_amount),
     url(r'^radiothon/premium/availability/(?P<premium>\d+)/(?P<options>\w+(/\w+)*)/$', ajax.ajax_get_premium_availability),
-    
+    url(r'^radiothon/pledge/print/$', views.rthon_plain_logs),
     #url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^radiothon/admin/', include(admin.site.urls)),
     url(r'^radiothon/accounts/', include('registration.urls')),

@@ -14,7 +14,7 @@ import smtplib, itertools
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.context_processors import request
-
+from datetime import datetime, timedelta
 
 class MainView(TemplateView):
     template_name = "index.html"
@@ -201,7 +201,37 @@ def email_to_business_manager(pledge):
 class PledgeDetail(DetailView):
     queryset = Pledge.objects.all()
     template_name = 'pledge_detail.html'    
+
+
+def rthon_plain_logs(request):
+    ip = get_client_ip(request)
     
+    #if (ip != '192.168.0.59'):
+    #    return HttpResponse('Error, not authorized.', content_type="text/plain")
+    
+    mode = request.GET.get('mode', 'hourly')
+    response = HttpResponse(content_type="text/plain")
+
+    pledges = Pledge.objects.all()
+    if (mode == 'hourly'):
+        time_threshold = datetime.now() - timedelta(hours=1)
+    elif (mode == 'daily'):
+        time_threshold = datetime.now() - timedelta(days=1)        
+    pledges = pledges.filter(created__gt=time_threshold)
+    
+    for pledge in pledges:
+        response.write(pledge.as_email())
+        
+    return response
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 def get_object_or_none(model, **kwargs):
     try:
         return model.objects.get(**kwargs)
