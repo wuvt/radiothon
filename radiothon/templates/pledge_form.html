@@ -18,6 +18,7 @@
 {% endblock %}
 
 {% block content %}
+<a href='.'>Clear form</a>
 <form action="/radiothon/pledge/" method="POST">{% csrf_token %}
     <h2 class='subform_title'>Pledge</h2>
     <span class='mc_script'>Hello, thank you for calling WUVT. May I take your pledge?</span>
@@ -31,10 +32,14 @@
     <div id='credit_subform' style='display: none;'>
         <h2 class='subform_title'>Credit Card</h2>
         <span class='mc_script'>May I take your credit card information?</span>
-        <p>{{ credit.number.label }}: {{ credit.number }} {{ credit.number.errors }}</p>
-	    <p>{{ credit.type.label }}: {{ credit.type }} {{ credit.type.errors }}</p>
-	    <p>{{ credit.expiration.label }}: {{ credit.expiration }} {{ credit.expiration.errors }}</p>
-        <p>{{ credit.code.label }}: {{ credit.code }} {{ credit.code.errors }}</p>
+        <p>{{ credit.number.label }}: {{ credit.number }} <span class='mc_instruction inline'>xxxx xxxx xxxx xxxx</span>
+            {{ credit.number.errors }}</p>
+	    <p>{{ credit.type.label }}: {{ credit.type }}
+	    {{ credit.type.errors }}</p>
+	    <p>{{ credit.expiration.label }}: {{ credit.expiration }} <span class='mc_instruction inline'>xx/xx</span>
+	    {{ credit.expiration.errors }}</p>
+        <p>{{ credit.code.label }}: {{ credit.code }} <span class='mc_instruction inline'>xxx (on the back of the card)</span>
+        {{ credit.code.errors }}</p>
     </div>
     <div id='hokiepassport_subform' style='display: none;'>
         <h2 class='subform_title'>Hokie Passport</h2>

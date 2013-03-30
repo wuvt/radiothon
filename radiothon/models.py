@@ -63,24 +63,24 @@ class HokiePassport(models.Model):
         return self.number
 
 class CreditCard(models.Model):
-    _number_validator = validators.RegexValidator('^[0-9]*$', "Enter a valid number sequence.")
-    _expiry_validator = validators.RegexValidator('^[0-9]?[0-9]/[0-9]{2}([0-9]{2})?', "Enter a valid month/year date string. i.e. 01/15")
-    number = models.CharField(max_length = 20, validators = [_number_validator,])
+    _number_validator = validators.RegexValidator('^([0-9]{4}(\-| )?){4}$', "Enter a valid number sequence.")
+    _expiry_validator = validators.RegexValidator('^[0-9]?[0-9]/[0-9]{2}([0-9]{2})?$', "Enter a valid month/year date string. i.e. 01/15")
+    number = models.CharField(max_length = 30, validators = [_number_validator,])
     type = models.CharField(max_length = 1, choices = (('M', "Mastercard"),
                                                        ('V', "Visa"),
                                                        ('A', "American Express"),
                                                        ('D', "Discover")))
-    expiration = models.CharField(max_length = 7, validators = [_expiry_validator,])
+    expiration = models.CharField(max_length = 8, validators = [_expiry_validator,])
     code = models.IntegerField()
     
     def __unicode__(self):
         return '%s %s, %s' % (self.get_type_display(),
-                              ('****%s' % str(self.number)[-4:]),
+                              self.number,
                               [ pledge.donor.name for pledge in self.pledge_set.all() ])
     
     def as_email(self):
-        return 'Card Number: %s\r\nType: %s\r\nExpires: %s\r\nCode: %s\r\n' % \
-                (self.number, self.type, self.expiration, self.code)
+        return 'Card Number: ****%s\r\nType: %s\r\nExpires: %s\r\nCode: %s\r\n' % \
+                (self.number[-4:], self.type, self.expiration, self.code)
     
 """These are options, like Size or Color"""
 class PremiumAttribute(models.Model):
