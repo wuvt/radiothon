@@ -53,7 +53,7 @@ class Donor(models.Model):
                  self.address.as_email() if self.address is not None else '',
                  self.phone,
                  self.email,
-                 self.donation_list)
+                 'Yes' if self.donation_list else 'No')
 
 class HokiePassport(models.Model):
     _number_validator = validators.RegexValidator('^[0-9]*$', "Enter a valid number sequence.")
@@ -80,7 +80,7 @@ class CreditCard(models.Model):
     
     def as_email(self):
         return 'Card Number: ****%s\r\nType: %s\r\nExpires: %s\r\nCode: %s\r\n' % \
-                (self.number[-4:], self.type, self.expiration, self.code)
+                (self.number[-4:], self.get_type_display(), self.expiration, self.code)
     
 """These are options, like Size or Color"""
 class PremiumAttribute(models.Model):
