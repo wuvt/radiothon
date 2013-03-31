@@ -15,6 +15,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.context_processors import request
 from datetime import datetime, timedelta
+import re
+from django.db.models.query_utils import Q
 
 class MainView(TemplateView):
     template_name = "index.html"
@@ -203,21 +205,45 @@ class PledgeDetail(DetailView):
     template_name = 'pledge_detail.html'    
 
 
-def rthon_plain_logs(request):
+def rthon_plain_logs(request, timespan):
     ip = get_client_ip(request)
     
-    #if (ip != '192.168.0.59'):
+    #if (ip != '192.168.0.59'): # should probably de-hardcode this
     #    return HttpResponse('Error, not authorized.', content_type="text/plain")
     
-    mode = request.GET.get('mode', 'hourly')
     response = HttpResponse(content_type="text/plain")
 
     pledges = Pledge.objects.all()
-    if (mode == 'hourly'):
+    datefilter = Q()
+    if (timespan == 'hourly'):
         time_threshold = datetime.now() - timedelta(hours=1)
-    elif (mode == 'daily'):
-        time_threshold = datetime.now() - timedelta(days=1)        
-    pledges = pledges.filter(created__gt=time_threshold)
+        datefilter = Q(created__gt = time_threshold)
+    elif (timespan == 'daily'):
+        time_threshold = datetime.now() - timedelta(days=1)  
+        datefilter = Q(created__gt = time_threshold)
+    else:
+        print timespan
+        matches = re.search('^(\d{4})\-(\d{2})\-(\d{2})\s?(?:(\d{2}):(\d{2}))?$', timespan).groups()
+        print matches
+        matches = [ int(match) for match in matches if match is not None]
+        if len(matches) == 3 or len(matches) == 5:
+            response.write(matches)
+            try:
+                matchdate = datetime(*matches)
+            except ValueError:
+                response.write('Error in request')
+                return response
+            response.write(matchdate)
+            delta = timedelta(days=1) if len(matches) is 3 else timedelta(hours=-1)
+            response.write(matchdate + delta)
+            response.write('\n')
+            datefilter = Q(created__gte = matchdate) & \
+                            Q(created__lte = matchdate + delta)
+        else:
+            response.write('Error in request.')
+            return response
+        
+    pledges = pledges.filter(datefilter)
     
     for pledge in pledges:
         response.write(pledge.as_email())
