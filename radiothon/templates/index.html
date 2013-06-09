@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block navigation_items %}
-	<li><a href=".">{{ pledge.donor.name }}</a></li>
+    <li><a href=".">{{ pledge.donor.name }}</a></li>
 {% endblock %}
 
 {% block header %}
@@ -11,11 +11,11 @@
 {% block content %}
 <h2 class='subform_title'>Select an Action</h2>
 <p>Using the <a href="/radiothon/admin">Admin Interface</a> you can...
-	<ul>
-	    <li>Browse Pledge and Donor Information</li>
+    <ul>
+        <li>Browse Pledge and Donor Information</li>
         <li>Add/remove premiums</li>
-	    <li>Track premium stocks</li>
-	</ul>
+        <li>Track premium stocks</li>
+    </ul>
 </p>
 <p>Using the <a href="{% url pledge-form %}">Mission Control pledge form</a> you can...
     <ul>

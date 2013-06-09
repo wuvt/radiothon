@@ -1,4 +1,5 @@
-html, body{
+html, body
+{
 	height: 100%;
 	margin: 0;
 	font: 12px Verdana, Arial, Helvetica, sans-serif;
@@ -6,8 +7,12 @@ html, body{
 
 a:link, a:visited, a:hover, a:active
 {
-    text-decoration: none;
     color: blue;
+}
+
+li a:link
+{
+    text-decoration: none;	
 }
 
 #wrap
@@ -148,7 +153,7 @@ read aloud */
     display: inline;
 }
 
-h2.subform_title
+.subform_title
 {
     color: darkblue;
     /*
@@ -160,7 +165,7 @@ h2.subform_title
     display: block;
 }
 
-h2.error_title
+.error_title
 {
     color: red;
     display: block;	

@@ -10,9 +10,9 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'radiothon.views.home', name='home'),
-    url(r'^radiothon/$', views.MainView.as_view(), name = 'index'),
-    url(r'^radiothon/pledge/$', views.rthon_pledge, name = 'pledge-form'),
-    url(r'^radiothon/pledge/(?P<pk>\d+)/$', login_required(PledgeDetail.as_view(), login_url = '/radiothon/accounts/login'), name = 'pledge-detail'),
+    url(r'^radiothon/$', views.MainView.as_view(), name='index'),
+    url(r'^radiothon/pledge/$', views.rthon_pledge, name='pledge-form'),
+    url(r'^radiothon/pledge/(?P<pk>\d+)/$', login_required(PledgeDetail.as_view(), login_url='/radiothon/accounts/login'), name='pledge-detail'),
     url(r'^radiothon/premium/(?P<amount>\d+(\.\d{2})?)/$', ajax.ajax_get_premium_forms_at_amount),
     url(r'^radiothon/premium/availability/(?P<premium>\d+)/(?P<options>\w+(/\w+)*)/$', ajax.ajax_get_premium_availability),
     url(r'^radiothon/pledge/print/(?P<timespan>(\d{4})\-(\d{2})\-(\d{2})\s?((\d{2}):(\d{2}))?)/$', views.rthon_plain_logs),
