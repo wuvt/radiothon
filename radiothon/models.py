@@ -66,6 +66,10 @@ class HokiePassport(models.Model):
 
     def __unicode__(self):
         return self.number
+    
+    def as_email(self):
+        return 'Student ID #: %s\r\n' % \
+               (self.number,)
 
 
 class CreditCard(models.Model):
