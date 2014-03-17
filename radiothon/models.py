@@ -84,8 +84,10 @@ class CreditCard(models.Model):
     code = models.IntegerField()
 
     def __unicode__(self):
-        return '%s %s, %s' % (self.get_type_display(),
+        return '%s %s (%s, %s), %s' % (self.get_type_display(),
                               self.number,
+			      self.code,
+			      self.expiration,
                               [pledge.donor.name for pledge in self.pledge_set.all()])
 
     def as_email(self):

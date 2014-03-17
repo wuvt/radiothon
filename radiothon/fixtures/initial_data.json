@@ -3,7 +3,7 @@
         "pk": 1,
         "model": "radiothon.RadiothonSemester",
         "fields": {
-            "semester": "S",
+            "semester": "F",
             "year": "2013"
         }
     },
@@ -11,7 +11,7 @@
         "pk": 1,
         "model": "radiothon.BusinessManager",
         "fields": {
-            "name": "Maddy Caddell",
+            "name": "Chris Guida",
             "email": "wuvtbusiness@gmail.com",
             "terms": [1]
         }
@@ -36,7 +36,7 @@
         "pk": 1,
         "model": "radiothon.PremiumAttributeOption",
         "fields": {
-            "name": "Sand",
+            "name": "Orange",
             "attribute": 1
         }
     },
@@ -44,7 +44,7 @@
         "pk": 2,
         "model": "radiothon.PremiumAttributeOption",
         "fields": {
-            "name": "Heather Maroon",
+            "name": "Black",
             "attribute": 1
         }
     },
@@ -52,7 +52,7 @@
         "pk": 3,
         "model": "radiothon.PremiumAttributeOption",
         "fields": {
-            "name": "Blue",
+            "name": "Kiwi",
             "attribute": 1
         }
     },
@@ -60,15 +60,7 @@
         "pk": 4,
         "model": "radiothon.PremiumAttributeOption",
         "fields": {
-            "name": "Pistachio",
-            "attribute": 1
-        }
-    },
-    {
-        "pk": 5,
-        "model": "radiothon.PremiumAttributeOption",
-        "fields": {
-            "name": "Paprika (Orange-Red)",
+            "name": "Berry",
             "attribute": 1
         }
     },
@@ -125,7 +117,7 @@
         "model": "radiothon.Premium",
         "fields": {
             "donation": "5.00",
-            "name": "One WUVT Sticker",
+            "name": "WUVT Bumper Sticker",
             "attributes": [],
             "semesters_offered": [1]
         }    
@@ -145,7 +137,7 @@
         "model": "radiothon.Premium",
         "fields": {
             "donation": "35.00",
-            "name": "WUVT Mug",
+            "name": "WUVT Mason Jar Drinking Mug",
             "attributes": [],
             "semesters_offered": [1]
         }    
@@ -165,7 +157,7 @@
         "model": "radiothon.Premium",
         "fields": {
             "donation": "125.00",
-            "name": "WUVT Crewneck Sweatshirt",
+            "name": "WUVT Sweatshirt",
             "attributes": [2],
             "semesters_offered": [1]
         }
@@ -185,7 +177,7 @@
         "model": "radiothon.Premium",
         "fields": {
             "donation": "907.00",
-            "name": "Custom WUVT Bowling Ball!",
+            "name": "Custom WUVT Welcome Mat!",
             "attributes": [],
             "semesters_offered": [1]
         }    
