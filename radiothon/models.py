@@ -81,18 +81,16 @@ class CreditCard(models.Model):
                                                    ('A', "American Express"),
                                                    ('D', "Discover")))
     expiration = models.CharField(max_length=8, validators=[_expiry_validator, ])
-    code = models.IntegerField()
 
     def __unicode__(self):
         return '%s %s (%s, %s), %s' % (self.get_type_display(),
                               self.number,
-			      self.code,
 			      self.expiration,
                               [pledge.donor.name for pledge in self.pledge_set.all()])
 
     def as_email(self):
-        return 'Card Number: ****%s\r\nType: %s\r\nExpires: %s\r\nCode: %s\r\n' % \
-               (self.number[-4:], self.get_type_display(), self.expiration, self.code)
+        return 'Card Number: ****%s\r\nType: %s\r\nExpires: %s\r\n' % \
+               (self.number[-4:], self.get_type_display(), self.expiration)
 
 
 class PremiumAttribute(models.Model):
