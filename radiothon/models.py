@@ -45,7 +45,7 @@ class Donor(models.Model):
     name = models.CharField(max_length=255)
     address = models.ForeignKey(Address, null=True, blank=True)
     phone = PhoneNumberField(null=True, blank=True)
-    email = models.EmailField()
+    email = models.EmailField(null=True, blank=True)
     donation_list = models.BooleanField()
 
     def __unicode__(self):
