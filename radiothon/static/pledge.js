@@ -54,6 +54,7 @@
         $('#id_pledge_form-premium_delivery').change(function () {
             var delivery = $(this).val();
             var address_subform = $('#address_subform');
+	    var mail_subform = $('#mail_subform');
             var premium_formarea = $('#premiums_subform_formarea');
             if (delivery !== 'N' && delivery !== '') {
                 premium_formarea.show('slow');
@@ -63,7 +64,9 @@
 
             if (delivery === 'M') {
                 address_subform.show('slow');
+		mail_subform.show('slow');
             } else {
+		mail_subform.hide('slow');
                 var payment = $('#id_pledge_form-payment').val();
                 if(payment === 'R') { // Credit
                     address_subform.show('slow');

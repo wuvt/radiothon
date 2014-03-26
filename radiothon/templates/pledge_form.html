@@ -49,7 +49,10 @@
         <span class='mc_script'>Would you like premiums, or would you like to put your entire donation towards the station?</span>
         <span class='mc_script'>If you want premiums, do you want them mailed, or do you want to pick them up at 350 Squires Student Center?</span>
         <p>{{ pledge.premium_delivery.label }}: {{ pledge.premium_delivery }}</p>
-        <span id='premiums_subform_formarea'></span>
+	<div id='mail_subform' style='display: none;'>
+	    <span class='mc_script'>There is a $6 shipping charge for mailed premiums.</span>
+	</div>
+        <div id='premiums_subform_formarea'></div>
     </div>
     <h2 class='subform_title'>Donor Information</h2>
     <p>{{ donor.name.label }}: {{ donor.name }} {{ donor.name.errors }}</p>
