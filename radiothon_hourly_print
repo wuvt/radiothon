@@ -1,0 +1,3 @@
+#! /bin/sh
+wget --no-check-certificate -qO- https://radiothon.wuvt.collegemedia.vt.edu/radiothon/pledge/print/hourly/ | lp -
+
