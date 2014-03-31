@@ -83,7 +83,7 @@ class CreditCard(models.Model):
     expiration = models.CharField(max_length=8, validators=[_expiry_validator, ])
 
     def __unicode__(self):
-        return '%s %s (%s, %s), %s' % (self.get_type_display(),
+        return '%s %s (%s), %s' % (self.get_type_display(),
                               self.number,
 			      self.expiration,
                               [pledge.donor.name for pledge in self.pledge_set.all()])
