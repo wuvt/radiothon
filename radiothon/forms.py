@@ -63,6 +63,6 @@ def premium_choice_form_factory(premium, form=PremiumChoiceFormBase):
                 attr_opts = attr_opts.exclude(pk=option.pk)
 
         # Add the filtered list to the model choice field
-        attrs['%s' % attribute.name] = forms.ModelChoiceField(attr_opts, required=False)  # could add validator to force required
+        attrs['%s' % attribute.name] = forms.ModelChoiceField(attr_opts, required=True)  # could add validator to force required
 
     return type(premium.simple_name + 'OptionChoiceForm', (forms.Form,), attrs)

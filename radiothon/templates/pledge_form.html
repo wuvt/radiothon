@@ -19,7 +19,7 @@
 
 {% block content %}
 <a href='.'>Clear form</a>
-<form action="/radiothon/pledge/" method="POST">{% csrf_token %}
+<form action="/radiothon/pledge/" method="POST" onsubmit="$('form input[type=submit]')[0].disabled = true;">{% csrf_token %}
     <h2 class='subform_title'>Pledge</h2>
     <span class='mc_script'>Hello, thank you for calling WUVT. May I take your pledge?</span>
     {{ pledge.amount.label }}: ${{ pledge.amount }} <span class='mc_script inline'>How much would you like to pledge?</span>
@@ -50,7 +50,8 @@
         <span class='mc_script'>If you want premiums, do you want them mailed, or do you want to pick them up at 350 Squires Student Center?</span>
         <p>{{ pledge.premium_delivery.label }}: {{ pledge.premium_delivery }}</p>
 	<div id='mail_subform' style='display: none;'>
-	    <span class='mc_script'>There is a $6 shipping charge for mailed premiums.</span>
+	    <span class='mc_script'>There is a $6 shipping charge for mailing premiums less than $120.</span>
+	    <span class='mc_script'>There is a $10 shipping charge for mailing premiums $120 or over.</span>
 	</div>
         <div id='premiums_subform_formarea'></div>
     </div>

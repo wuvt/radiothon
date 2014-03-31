@@ -113,44 +113,45 @@ def rthon_pledge(request):
 
             if len(errors) == 0:
                 pledge.save()
-                for form in premium_choice_forms:
-		    # TODO: For some reason, even if fields are left blank,
-                    # the premium form's is_valid remains true.
-                    # GAH killin' me Django
-                    if (form.is_valid() and 'premium' in form.cleaned_data.keys()):  # form.fields['premium'].queryset[0]
-                        if (form.cleaned_data['want'] is False):
-                            continue
+		if pledge.premium_delivery != 'N':
+		    for form in premium_choice_forms:
+			# TODO: For some reason, even if fields are left blank,
+			# the premium form's is_valid remains true.
+			# GAH killin' me Django
+			if (form.is_valid() and 'premium' in form.cleaned_data.keys()):  # form.fields['premium'].queryset[0]
+			    if (form.cleaned_data['want'] is False):
+				continue
 
-                        premium = form.cleaned_data['premium']
-                        instance = PremiumChoice(premium=premium,
-                                                 pledge=pledge)
-                        #try:
-                        instance.save()
-                        #except IntegrityError:
-                            #break
-                        for value in form.cleaned_data.values():
-                            if (type(value) is PremiumAttributeOption):
-                                instance.options.add(value)
-			
-			# Subtract one from the inventory of this object.
-			# When the count on the relationship is 0, donors will no longer
-			# be able to request an item with these attributes
-			# i.e. You run out of small red shirts. (they're dead, Jim)
+			    premium = form.cleaned_data['premium']
+			    instance = PremiumChoice(premium=premium,
+						     pledge=pledge)
+			    #try:
+			    instance.save()
+			    #except IntegrityError:
+				#break
+			    for value in form.cleaned_data.values():
+				if (type(value) is PremiumAttributeOption):
+				    instance.options.add(value)
+			    
+			    # Subtract one from the inventory of this object.
+			    # When the count on the relationship is 0, donors will no longer
+			    # be able to request an item with these attributes
+			    # i.e. You run out of small red shirts. (they're dead, Jim)
 
-			# Retrieve the relationship object for this premiumchoice
-			relationshipQuery = PremiumAttributeRelationship.objects.filter(premium=premium) 
-			for option in instance.options.all():
-			    relationshipQuery.filter(options=option)
-			# If the count is greater than 0, subtract one	
-			relationshipQuery.filter(count__gt=0).update(count=F('count')-1)
+			    # Retrieve the relationship object for this premiumchoice
+			    relationshipQuery = PremiumAttributeRelationship.objects.filter(premium=premium) 
+			    for option in instance.options.all():
+				relationshipQuery.filter(options=option)
+			    # If the count is greater than 0, subtract one	
+			    relationshipQuery.filter(count__gt=0).update(count=F('count')-1)
 
-                    else:
-                        if (len(form.errors) > 0):
-                            errors.append(form.errors)
-                if len(errors) > 0:
-                    PremiumChoice.objects.filter(pledge=pledge).delete()
-                    if pledge.id is not None:
-                        pledge.delete()
+			else:
+			    if (len(form.errors) > 0):
+				errors.append(form.errors)
+		    if len(errors) > 0:
+			PremiumChoice.objects.filter(pledge=pledge).delete()
+			if pledge.id is not None:
+			    pledge.delete()
 
             # If we've successfully parsed all the data
             # email it to the business manager
@@ -165,6 +166,7 @@ def rthon_pledge(request):
         premium_choice_forms = create_premium_formsets(request)
 
     return render_to_response('pledge_form.html', {
+	'errors': errors,
         'pledge': pledge_form,
         'donor': donor_form,
         'address': address_form,
