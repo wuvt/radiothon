@@ -80,6 +80,10 @@ li a:link
 	display: inline;
 }
 
+#errors {
+    margin: 5px;
+}
+
 #content
 {
 	margin: 5px;

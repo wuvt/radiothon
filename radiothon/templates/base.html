@@ -37,9 +37,11 @@
                 {% endblock %}
             </div>
             <div id="content">
-                {% block errors %}
-                    {{ errors|safe }}
-                {% endblock %}
+		<div id="errors">
+		    {% block errors %}
+			{{ errors|safe }}
+		    {% endblock %}
+		</div>
                 {% block content %}
                 <!-- Items like tables and forms go here. -->
                 {% endblock %}
