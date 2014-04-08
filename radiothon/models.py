@@ -73,7 +73,8 @@ class HokiePassport(models.Model):
 
 
 class CreditCard(models.Model):
-    _number_validator = validators.RegexValidator('^([0-9]{4}(\-| )?){4}$', "Enter a valid number sequence.")
+    # Note, most card numbers are 16 digits, but American Express are only 15 digits.
+    _number_validator = validators.RegexValidator('^([0-9]{4}(\-| )?){3}([0-9]{3,4})$', "Enter a valid number sequence.")
     _expiry_validator = validators.RegexValidator('^[0-9]?[0-9]/[0-9]{2}([0-9]{2})?$', "Enter a valid month/year date string. i.e. 01/15")
     number = models.CharField(max_length=30, validators=[_number_validator, ])
     type = models.CharField(max_length=1, choices=(('M', "Mastercard"),
